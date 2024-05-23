@@ -23,52 +23,47 @@ const int    M2  = 998244353;
 #define sec  second
 #define endl '\n'
 using namespace std;
-#define int i64
-void show(vector<int> &v, int k) {
-    for (int i = 0; i <= k; ++i)
-        cout << v[i] << " ";
-    cout << endl;
+// #define int i64
+constexpr i64 upper = 20000000000;
+constexpr i64 lower = 123456789;
+vector<i64> tens = {1LL, 10LL, 100LL, 1000LL, 10000LL, \
+                        100000LL, 1000000LL, 10000000LL, \
+                        100000000LL, 1000000000LL, 10000000000LL, \
+                        100000000000LL};
+vector<int> initV = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+i64 n, d;
+constexpr i64 maxn = LONG_LONG_MAX;
+void dfs(vector<int> v) {
+    // for (int i = 0; i < 9; ++i)
 }
-int binarySearch(int x, int l, int r, vector<int> &p) {
-    int mid = ((r - l) >> 1) + l;
-    if (l == r)
-        return l;
-    if (p[mid] == x)
-        return mid;
-    if (p[mid] < x) {
-        if (p[mid+1] > x)  // crucial
-            return mid;
-        return binarySearch(x, mid+1, r, p);
-    } else {
-        return binarySearch(x, l, mid, p);
+
+i64 dvpd(i64 x) {
+    vector<int> cnt(10);
+    i64 base = x;
+    while (base < maxn) {
+        i64 tmp = base;
+        if (tmp) {
+            ++cnt[tmp % 10];
+            tmp /= 10;
+        }
+        bool f = true;
+        for (int i = 1; i <= 9; ++i) {
+            if (!cnt[i])  { f = false; break; }
+            if (i == d && cnt[d] < 2) { f = false; break; }
+        }
+        if (f)
+            return base;
+        base += x;
     }
+    return -1LL;
 }
 
 void Solution() {
-    int n, k, q;
-    cin >> n >> k >> q;
-    vector<int> a(k+1), b(k+1);
-    lfor (i, 1, k, 1) {
-        cin >> a[i];
-    }
-    lfor (i, 1, k, 1) {
-        cin >> b[i];
-    }
-    while (q--) {
-        int tmp;
-        cin >> tmp;
-        int nearby = binarySearch(tmp, 0, k, a);
-        // cout << nearby << endl, show(b, k), show(a, k);
-        if (tmp == a[nearby]) {
-            cout << b[nearby] << " ";
-        } else {
-            cout << b[nearby] + (tmp - a[nearby]) * \
-                                (b[nearby+1]-b[nearby]) / \
-                                (a[nearby+1]-a[nearby]) << " ";
-        }
-    }
+    cin >> n >> d;
+    vector<int> v = initV;
+    cout << dvpd(n) << endl;
 }
-#undef int
+// #undef int
 
 signed main(void) {
 // Close the Sync_IO
@@ -79,11 +74,10 @@ std::cin.tie(0), std::cout.tie(0);
 // Be care of I/O!!!
     // scanf("%d", &T), getchar();
     std::cin >> T, std::cin.get();
-
+    
     while (T--) {
         Solution();
-        cout << endl;
     }
-
+    
     return 0;
 }

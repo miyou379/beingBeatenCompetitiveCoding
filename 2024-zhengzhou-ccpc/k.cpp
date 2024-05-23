@@ -23,52 +23,59 @@ const int    M2  = 998244353;
 #define sec  second
 #define endl '\n'
 using namespace std;
-#define int i64
-void show(vector<int> &v, int k) {
-    for (int i = 0; i <= k; ++i)
-        cout << v[i] << " ";
-    cout << endl;
-}
-int binarySearch(int x, int l, int r, vector<int> &p) {
-    int mid = ((r - l) >> 1) + l;
-    if (l == r)
-        return l;
-    if (p[mid] == x)
-        return mid;
-    if (p[mid] < x) {
-        if (p[mid+1] > x)  // crucial
-            return mid;
-        return binarySearch(x, mid+1, r, p);
-    } else {
-        return binarySearch(x, l, mid, p);
-    }
+// #define int i64
+constexpr int maxn = 100005;
+
+// insert v into u
+inline void insert(int u, int v, vector< vector<int> > &valid) {
+    valid[u].push_back(v);
 }
 
 void Solution() {
-    int n, k, q;
-    cin >> n >> k >> q;
-    vector<int> a(k+1), b(k+1);
-    lfor (i, 1, k, 1) {
-        cin >> a[i];
+    int n;
+    cin >> n;
+    vector< vector<int> > valid(n+1);
+    vector<int> val(n+1);
+    lfor (i, 1, n, 1)
+        cin >> val[i];
+    lfor (i, 1, n-1, 1) {
+        int u, v;
+        cin >> u >> v;
+        if (val[u]*1.0/2 <= val[v]*1.0)
+            insert(u, v, valid);
+        if (val[v]*1.0/2 <= val[u]*1.0)
+            insert(v, u, valid);
     }
-    lfor (i, 1, k, 1) {
-        cin >> b[i];
-    }
-    while (q--) {
-        int tmp;
-        cin >> tmp;
-        int nearby = binarySearch(tmp, 0, k, a);
-        // cout << nearby << endl, show(b, k), show(a, k);
-        if (tmp == a[nearby]) {
-            cout << b[nearby] << " ";
-        } else {
-            cout << b[nearby] + (tmp - a[nearby]) * \
-                                (b[nearby+1]-b[nearby]) / \
-                                (a[nearby+1]-a[nearby]) << " ";
+    // vector<int> ans;
+    int num = 0;
+    lfor (i, 1, n, 1) {
+        int left = n;
+        queue<int> bfs;
+        vector<int> flag(n+1);
+        flag[i] = 1;
+        bfs.push(i);
+        int s = 0;
+        while ((s = bfs.size())) {
+            lfor (k, 1, s, 1) {
+                for (auto p : valid[bfs.front()]) {
+                    if (!flag[p]) {
+                       bfs.push(p);
+                        flag[p] = 1; 
+                    }
+                }
+                bfs.pop();
+                --left;
+            }
+        }
+        if (!left) {
+            // ans.push_back(i);
+            ++num;
         }
     }
+    // for (auto p : ans) { cout << p << " "; cout << endl; };
+    cout << num << endl;
 }
-#undef int
+// #undef int
 
 signed main(void) {
 // Close the Sync_IO
@@ -79,11 +86,10 @@ std::cin.tie(0), std::cout.tie(0);
 // Be care of I/O!!!
     // scanf("%d", &T), getchar();
     std::cin >> T, std::cin.get();
-
+    
     while (T--) {
         Solution();
-        cout << endl;
     }
-
+    
     return 0;
 }

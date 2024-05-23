@@ -23,52 +23,48 @@ const int    M2  = 998244353;
 #define sec  second
 #define endl '\n'
 using namespace std;
-#define int i64
-void show(vector<int> &v, int k) {
-    for (int i = 0; i <= k; ++i)
-        cout << v[i] << " ";
-    cout << endl;
-}
-int binarySearch(int x, int l, int r, vector<int> &p) {
-    int mid = ((r - l) >> 1) + l;
-    if (l == r)
-        return l;
-    if (p[mid] == x)
-        return mid;
-    if (p[mid] < x) {
-        if (p[mid+1] > x)  // crucial
-            return mid;
-        return binarySearch(x, mid+1, r, p);
-    } else {
-        return binarySearch(x, l, mid, p);
-    }
+// #define int i64
+typedef struct point {
+    int x;
+    int y;
+    point(int a = 0, int b = 0) : x(a), y(b) {}
+} point;
+constexpr int maxn = 200005;
+vector<point> dots(maxn);
+
+long double func(int i, int j) {
+    i64 a = abs(dots[i].x - dots[j].x);
+    i64 b = abs(dots[i].y - dots[j].y);
+    if (!a || !b) return 1.0L;
+    i64 a2b2 = a*a + b*b;
+    return ((a+b) * 1.0L/ sqrt(a2b2));
 }
 
 void Solution() {
-    int n, k, q;
-    cin >> n >> k >> q;
-    vector<int> a(k+1), b(k+1);
-    lfor (i, 1, k, 1) {
-        cin >> a[i];
+    int n;
+    cin >> n;
+    pii ans;
+    long double ans_f = 0.0L;
+    lfor (i, 0, n-1, 1) {
+        cin >> dots[i].x >> dots[i].y;
     }
-    lfor (i, 1, k, 1) {
-        cin >> b[i];
-    }
-    while (q--) {
-        int tmp;
-        cin >> tmp;
-        int nearby = binarySearch(tmp, 0, k, a);
-        // cout << nearby << endl, show(b, k), show(a, k);
-        if (tmp == a[nearby]) {
-            cout << b[nearby] << " ";
-        } else {
-            cout << b[nearby] + (tmp - a[nearby]) * \
-                                (b[nearby+1]-b[nearby]) / \
-                                (a[nearby+1]-a[nearby]) << " ";
+    lfor (i, 0, n-1, 1) {
+        lfor (j, i+1, n-1, 1) {
+            int a = abs(dots[i].x - dots[j].x);
+            int b = abs(dots[i].y - dots[j].y);
+            if (!a || !b) continue;
+            // long double tmp = max(a, b)*1.0L / min(a, b);
+            long double tmp = a * 1.0L / b;
+            if (tmp > ans_f) {
+                ans = {i, j};
+                ans_f = tmp;
+            }
         }
     }
+    // cout << ans.fir << " " << ans.sec << endl;
+    cout << fixed << setprecision(12) << func(ans.fir, ans.sec) << endl;
 }
-#undef int
+// #undef int
 
 signed main(void) {
 // Close the Sync_IO
@@ -79,11 +75,10 @@ std::cin.tie(0), std::cout.tie(0);
 // Be care of I/O!!!
     // scanf("%d", &T), getchar();
     std::cin >> T, std::cin.get();
-
+    
     while (T--) {
         Solution();
-        cout << endl;
     }
-
+    
     return 0;
 }
