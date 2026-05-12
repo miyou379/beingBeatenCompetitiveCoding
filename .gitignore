@@ -1,0 +1,9 @@
+.TEMPLATE
+.TEMPLATE/
+
+.history/
+
+.vscode
+.vscode/
+
+build/
